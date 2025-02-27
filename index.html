@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Enigma</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: #f0f0f0;
+      }
+      #word-display {
+        font-size: 2em;
+        letter-spacing: 0.5em;
+        margin: 20px;
+      }
+      .letter {
+        display: inline-block;
+        transition: all 0.3s;
+      }
+      .hidden {
+        color: transparent;
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      }
+      .keyboard {
+        margin: 20px auto;
+        max-width: 500px;
+      }
+      .keyboard-button {
+        padding: 15px;
+        margin: 3px;
+        border: none;
+        border-radius: 5px;
+        background: #d3d6da;
+        cursor: pointer;
+        font-weight: bold;
+        min-width: 35px;
+      }
+      .keyboard-button.correct {
+        background: #6aaa64;
+        color: white;
+      }
+      .keyboard-button.wrong {
+        background: #787c7e;
+        color: white;
+      }
+      .keyboard-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
+      #message {
+        min-height: 25px;
+        margin: 10px;
+      }
+      .word-guess-section {
+        margin: 20px;
+      }
+      #word-input {
+        padding: 12px;
+        font-size: 16px;
+        width: 200px;
+        text-align: center;
+        text-transform: lowercase;
+      }
+      #guess-word-btn {
+        padding: 12px 20px;
+        background: #6aaa64;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Internet Ordkløver</h1>
+    <h2 id="word-hint"></h2>
+    <div id="word-display"></div>
+    <div class="keyboard" id="keyboard">
+      <div class="row">
+        <button class="keyboard-button" data-key="q">q</button>
+        <button class="keyboard-button" data-key="w">w</button>
+        <button class="keyboard-button" data-key="e">e</button>
+        <button class="keyboard-button" data-key="r">r</button>
+        <button class="keyboard-button" data-key="t">t</button>
+        <button class="keyboard-button" data-key="y">y</button>
+        <button class="keyboard-button" data-key="u">u</button>
+        <button class="keyboard-button" data-key="i">i</button>
+        <button class="keyboard-button" data-key="o">o</button>
+        <button class="keyboard-button" data-key="p">p</button>
+      </div>
+      <div class="row">
+        <button class="keyboard-button" data-key="a">a</button>
+        <button class="keyboard-button" data-key="s">s</button>
+        <button class="keyboard-button" data-key="d">d</button>
+        <button class="keyboard-button" data-key="f">f</button>
+        <button class="keyboard-button" data-key="g">g</button>
+        <button class="keyboard-button" data-key="h">h</button>
+        <button class="keyboard-button" data-key="j">j</button>
+        <button class="keyboard-button" data-key="k">k</button>
+        <button class="keyboard-button" data-key="l">l</button>
+      </div>
+      <div class="row">
+        <button class="keyboard-button" data-key="æ">æ</button>
+        <button class="keyboard-button" data-key="z">z</button>
+        <button class="keyboard-button" data-key="x">x</button>
+        <button class="keyboard-button" data-key="c">c</button>
+        <button class="keyboard-button" data-key="v">v</button>
+        <button class="keyboard-button" data-key="b">b</button>
+        <button class="keyboard-button" data-key="n">n</button>
+        <button class="keyboard-button" data-key="m">m</button>
+        <button class="keyboard-button" data-key="ø">ø</button>
+        <button class="keyboard-button" data-key="å">å</button>
+      </div>
+    </div>
+    <div class="word-guess-section">
+      <input type="text" id="word-input" placeholder="Gæt hele ordet" />
+      <button id="guess-word-btn" onclick="guessWord()">Gæt ord</button>
+    </div>
+
+    <p>Forsøg tilbage: <span id="attempts"></span></p>
+    <p id="message"></p>
+
+    <script>
+      const WORD_LIST = [
+        { hint: "Adjektiv", word: "cringe" },
+        { hint: "Kropsdel", word: "gyatt" },
+        { hint: "Begreb", word: "chillpill" },
+        { hint: "Person", word: "rizzler" },
+      ];
+      let secretWord = "";
+      let hint = "";
+      let guessedLetters = [];
+      let attempts = 12;
+      let won = false;
+
+      function getSecretWord() {
+        const today = new Date();
+        const dateString = today.toISOString().slice(0, 10);
+
+        let seed = 0;
+        for (let i = 0; i < dateString.length; i++) {
+          seed = (seed << 5) - seed + dateString.charCodeAt(i);
+        }
+
+        const index = Math.abs(seed) % WORD_LIST.length;
+        return WORD_LIST[index];
+      }
+
+      function initGame() {
+        todaysWord = getSecretWord();
+        secretWord = todaysWord.word;
+        hint = todaysWord.hint;
+        updateDisplay();
+      }
+
+      function updateDisplay() {
+        const display = secretWord
+          .split("")
+          .map((letter) =>
+            guessedLetters.includes(letter)
+              ? `<span class="letter">${letter}</span>`
+              : `<span class="letter hidden">_</span>`
+          )
+          .join("");
+
+        document.getElementById("word-hint").innerHTML = hint;
+        document.getElementById("word-display").innerHTML = display;
+        document.getElementById("attempts").textContent = attempts;
+
+        // Opdater tastatur farver
+        document.querySelectorAll(".keyboard-button").forEach((btn) => {
+          const letter = btn.dataset.key;
+          if (guessedLetters.includes(letter)) {
+            btn.classList.add(
+              secretWord.includes(letter) ? "correct" : "wrong"
+            );
+            btn.disabled = true;
+          }
+        });
+      }
+
+      function handleGuess(letter) {
+        if (attempts <= 0) return;
+        if (won) return;
+        if (guessedLetters.includes(letter)) return;
+
+        attempts--;
+
+        guessedLetters.push(letter);
+
+        if (!secretWord.includes(letter)) {
+          showMessage("❌ Bogstavet findes ikke i ordet");
+        } else {
+          showMessage("✅ Godt gættet!");
+        }
+
+        checkGameOver();
+        updateDisplay();
+      }
+
+      function checkGameOver() {
+        if (attempts <= 0) {
+          showMessage(`💀 Game over! Ordet var: ${secretWord}`);
+        } else if (
+          [...new Set(secretWord)].every((l) => guessedLetters.includes(l))
+        ) {
+          showMessage("🎉 Tillykke, du vandt!");
+          won = true;
+        }
+      }
+
+      function showMessage(msg) {
+        document.getElementById("message").textContent = msg;
+      }
+
+      document.querySelectorAll(".keyboard-button").forEach((btn) => {
+        btn.addEventListener("click", () => handleGuess(btn.dataset.key));
+      });
+
+      function guessWord() {
+        if (won) return;
+        const guess = document.getElementById("word-input").value.toLowerCase();
+        document.getElementById("word-input").value = "";
+
+        if (guess.length !== secretWord.length) {
+          showMessage(`Ordet skal være ${secretWord.length} bogstaver!`);
+          return;
+        }
+
+        if (guess === secretWord) {
+          showMessage("🎉 Tillykke, du vandt!");
+          won = true;
+          secretWord.split("").forEach((l) => {
+            if (!guessedLetters.includes(l)) guessedLetters.push(l);
+          });
+          updateDisplay();
+        } else {
+          attempts--;
+          showMessage("❌ Forkert ord");
+          checkGameOver();
+        }
+      }
+
+      initGame();
+    </script>
+  </body>
+</html>
