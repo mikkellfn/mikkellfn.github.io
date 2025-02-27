@@ -195,7 +195,8 @@
         const urbanUrl = "https://www.urbandictionary.com/define.php?term=";
         if (won | (attempts <= 0)) {
           urbanUrlElement = document.getElementById("urban-link");
-          urbanUrlElement.textContent = "Men hvad dælen betyder det? (Tryk på mig)";
+          urbanUrlElement.textContent =
+            "Men hvad dælen betyder det? (Tryk på mig)";
           urbanUrlElement.href = urbanUrl + secretWord;
         }
       }
@@ -215,20 +216,21 @@
           showMessage("✅ Godt gættet!");
         }
 
+        attempts--;
         checkGameState();
         updateDisplay();
       }
 
       function checkGameState() {
-        if (attempts <= 0) {
-          showMessage(`💀 Game over! Ordet var: ${secretWord}`);
-        } else if (
+        if (
           [...new Set(secretWord.replace(" ", ""))].every((l) =>
             guessedLetters.includes(l)
           )
         ) {
           showMessage("🎉 Tillykke, du vandt!");
           won = true;
+        } else if (attempts <= 0) {
+          showMessage(`💀 Game over! Ordet var: ${secretWord}`);
         }
       }
 
@@ -241,7 +243,7 @@
       });
 
       function guessWord() {
-        if (won) return;
+        if (won | (attempts <= 0)) return;
         const guess = document.getElementById("word-input").value.toLowerCase();
         document.getElementById("word-input").value = "";
 
