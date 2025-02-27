@@ -166,23 +166,49 @@
         { hint: "Fænomen", word: "glow up" },
         { hint: "Fænomen", word: "goblin mode" },
       ];
+
       let secretWord = "";
       let hint = "";
       let guessedLetters = [];
       let attempts = 12;
       let won = false;
 
+      function shuffleArray(array, seed) {
+        let currentIndex = array.length,
+          temporaryValue,
+          randomIndex;
+        seed = seed || 1;
+        let random = function () {
+          var x = Math.sin(seed++) * 10000;
+          return x - Math.floor(x);
+        };
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+          // Pick a remaining element...
+          randomIndex = Math.floor(random() * currentIndex);
+          currentIndex -= 1;
+          // And swap it with the current element.
+          temporaryValue = array[currentIndex];
+          array[currentIndex] = array[randomIndex];
+          array[randomIndex] = temporaryValue;
+        }
+        return array;
+      }
+
+      function dateDiff(first, second) {
+        return Math.floor((second - first) / (1000 * 60 * 60 * 24));
+      }
+
       function getSecretWord() {
+        shuffleArray(WORD_LIST, 42);
+
+        const startOfTime = new Date("2025-02-27T00:00:00Z");
         const today = new Date();
         const dateString = today.toISOString().slice(0, 10);
 
-        let seed = 0;
-        for (let i = 0; i < dateString.length; i++) {
-          seed = (seed << 5) - seed + dateString.charCodeAt(i);
-        }
+        day = dateDiff(startOfTime, today);
 
-        const index = Math.abs(seed) % WORD_LIST.length;
-        return WORD_LIST[index];
+        return WORD_LIST[day % WORD_LIST.length];
       }
 
       function initGame() {
