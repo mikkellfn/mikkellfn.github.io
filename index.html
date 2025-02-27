@@ -124,20 +124,34 @@
 
     <script>
       const WORD_LIST = [
-        { hint: "Socialt", word: "cringe" },
-        { hint: "Kropsdel", word: "gyatt" },
-        { hint: "Begreb", word: "chillpill" },
         { hint: "Person", word: "rizzler" },
         { hint: "Person", word: "skibidi toilet" },
-        { hint: "Handling", word: "fanum tax" },
-        { hint: "Titel", word: "sigma" },
-        { hint: "Kvalitet", word: "banger" },
+        { hint: "Person", word: "npc" },
+        { hint: "Person", word: "gatekeeper" },
+        { hint: "Person", word: "troll" },
+        { hint: "Person", word: "meme lord" },
+        { hint: "Begreb", word: "glazing" },
+        { hint: "Begreb", word: "chillpill" },
+        { hint: "Begreb", word: "gyatt" },
+        { hint: "Begreb", word: "cringe" },
+        { hint: "Begreb", word: "drip" },
         { hint: "Begreb", word: "no cap" },
         { hint: "Begreb", word: "touch grass" },
-        { hint: "Fænomen", word: "main character" },
-        { hint: "Kritik", word: "l rizz" },
-        { hint: "Adfærd", word: "glazing" },
-        { hint: "Mad", word: "bussin" },
+        { hint: "Begreb", word: "slay" },
+        { hint: "Begreb", word: "thirst trap" },
+        { hint: "Begreb", word: "l rizz" },
+        { hint: "Begreb", word: "banger" },
+        { hint: "Begreb", word: "bussin" },
+        { hint: "Begreb", word: "sheesh" },
+        { hint: "Begreb", word: "newbie" },
+        { hint: "Fænomen", word: "main character energy" },
+        { hint: "Fænomen", word: "girl math" },
+        { hint: "Fænomen", word: "quiet quitting" },
+        { hint: "Fænomen", word: "parasocial" },
+        { hint: "Fænomen", word: "doomscrolling" },
+        { hint: "Fænomen", word: "fanum tax" },
+        { hint: "Fænomen", word: "glow up" },
+        { hint: "Fænomen", word: "goblin mode" },
       ];
       let secretWord = "";
       let hint = "";
@@ -205,8 +219,6 @@
         if (attempts <= 0) return;
         if (won) return;
         if (guessedLetters.includes(letter)) return;
-
-        attempts--;
 
         guessedLetters.push(letter);
 
