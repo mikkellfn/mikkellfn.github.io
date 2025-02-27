@@ -120,19 +120,20 @@
 
     <p>Forsøg tilbage: <span id="attempts"></span></p>
     <p id="message"></p>
+    <a id="urban-link" href=""></a>
 
     <script>
       const WORD_LIST = [
-        { hint: "Adjektiv", word: "cringe" },
+        { hint: "Socialt", word: "cringe" },
         { hint: "Kropsdel", word: "gyatt" },
         { hint: "Begreb", word: "chillpill" },
         { hint: "Person", word: "rizzler" },
         { hint: "Person", word: "skibidi toilet" },
         { hint: "Handling", word: "fanum tax" },
         { hint: "Titel", word: "sigma" },
-        { hint: "Socialt", word: "no cap" },
         { hint: "Kvalitet", word: "banger" },
-        { hint: "Tilstand", word: "touch grass" },
+        { hint: "Begreb", word: "no cap" },
+        { hint: "Begreb", word: "touch grass" },
         { hint: "Fænomen", word: "main character" },
         { hint: "Kritik", word: "l rizz" },
         { hint: "Adfærd", word: "glazing" },
@@ -190,6 +191,13 @@
             btn.disabled = true;
           }
         });
+
+        const urbanUrl = "https://www.urbandictionary.com/define.php?term=";
+        if (won | (attempts <= 0)) {
+          urbanUrlElement = document.getElementById("urban-link");
+          urbanUrlElement.textContent = "Men hvad dælen betyder det? (Tryk på mig)";
+          urbanUrlElement.href = urbanUrl + secretWord;
+        }
       }
 
       function handleGuess(letter) {
