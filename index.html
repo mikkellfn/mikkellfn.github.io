@@ -202,9 +202,8 @@
       function getSecretWord() {
         shuffleArray(WORD_LIST, 42);
 
-        const startOfTime = new Date("2025-02-27T00:00:00Z");
+        const startOfTime = new Date("2025-02-28T00:00:00Z");
         const today = new Date();
-        const dateString = today.toISOString().slice(0, 10);
 
         day = dateDiff(startOfTime, today);
 
