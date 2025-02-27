@@ -127,6 +127,16 @@
         { hint: "Kropsdel", word: "gyatt" },
         { hint: "Begreb", word: "chillpill" },
         { hint: "Person", word: "rizzler" },
+        { hint: "Person", word: "skibidi toilet" },
+        { hint: "Handling", word: "fanum tax" },
+        { hint: "Titel", word: "sigma" },
+        { hint: "Socialt", word: "no cap" },
+        { hint: "Kvalitet", word: "banger" },
+        { hint: "Tilstand", word: "touch grass" },
+        { hint: "Fænomen", word: "main character" },
+        { hint: "Kritik", word: "l rizz" },
+        { hint: "Adfærd", word: "glazing" },
+        { hint: "Mad", word: "bussin" },
       ];
       let secretWord = "";
       let hint = "";
@@ -158,7 +168,9 @@
         const display = secretWord
           .split("")
           .map((letter) =>
-            guessedLetters.includes(letter)
+            letter == " "
+              ? `<span> </span>`
+              : guessedLetters.includes(letter)
               ? `<span class="letter">${letter}</span>`
               : `<span class="letter hidden">_</span>`
           )
@@ -195,15 +207,17 @@
           showMessage("✅ Godt gættet!");
         }
 
-        checkGameOver();
+        checkGameState();
         updateDisplay();
       }
 
-      function checkGameOver() {
+      function checkGameState() {
         if (attempts <= 0) {
           showMessage(`💀 Game over! Ordet var: ${secretWord}`);
         } else if (
-          [...new Set(secretWord)].every((l) => guessedLetters.includes(l))
+          [...new Set(secretWord.replace(" ", ""))].every((l) =>
+            guessedLetters.includes(l)
+          )
         ) {
           showMessage("🎉 Tillykke, du vandt!");
           won = true;
@@ -238,7 +252,7 @@
         } else {
           attempts--;
           showMessage("❌ Forkert ord");
-          checkGameOver();
+          checkGameState();
         }
       }
 
